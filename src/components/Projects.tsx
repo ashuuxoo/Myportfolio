@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { PROJECTS } from '../data/projects';
+import { useGitHub } from '../context/GitHubContext';
 import { Project, ProjectCategory } from '../types';
 import { ProjectCard } from './ProjectCard';
 import { ProjectModal } from './ProjectModal';
 import { RevealTitle } from './ui/RevealTitle';
-import { Layers, Sparkles, FolderGit2, ExternalLink } from 'lucide-react';
+import { Layers, Sparkles, FolderGit2, ExternalLink, RefreshCw, CheckCircle } from 'lucide-react';
 
 export const Projects: React.FC = () => {
+  const { projects, repoCount, isSyncing, refresh, githubProfileUrl } = useGitHub();
   const [selectedCategory, setSelectedCategory] = useState<ProjectCategory>('All');
   const [activeModalProject, setActiveModalProject] = useState<Project | null>(null);
 
   const categories: ProjectCategory[] = ['All', 'Web', 'AI / ML', 'Data', 'Analytics', 'Mobile'];
 
-  const filteredProjects = PROJECTS.filter((p) => {
+  const filteredProjects = projects.filter((p) => {
     if (selectedCategory === 'All') return true;
     return p.category.includes(selectedCategory);
   });
@@ -35,15 +36,41 @@ export const Projects: React.FC = () => {
               Things I've Built
             </RevealTitle>
             <p className="text-slate-400 mt-2 text-base sm:text-lg max-w-2xl">
-              From data pipelines to real-time products. Every project listed here is public,
-              verifiable, and grounded directly in source code.
+              From data pipelines to real-time products. Every project is dynamically fetched from{' '}
+              <a
+                href={githubProfileUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-cyan-400 hover:text-cyan-300 underline underline-offset-4"
+              >
+                github.com/ashuuxoo
+              </a>
+              , fully verified and auto-updated.
             </p>
           </div>
 
-          {/* GitHub Source Note */}
-          <div className="text-xs font-mono text-slate-400 shrink-0 flex items-center gap-2 p-3 rounded-xl bg-slate-900/60 border border-white/5">
-            <span className="w-2 h-2 rounded-full bg-cyan-400" />
-            <span>5 Public GitHub Repositories</span>
+          {/* GitHub Auto-Sync Status Badge */}
+          <div className="flex items-center gap-3 shrink-0">
+            <button
+              onClick={() => refresh()}
+              disabled={isSyncing}
+              title="Click to re-sync with GitHub"
+              className="text-xs font-mono text-slate-300 hover:text-white flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-white/10 transition-all cursor-pointer group shadow-sm"
+            >
+              <span
+                className={`w-2 h-2 rounded-full ${
+                  isSyncing ? 'bg-amber-400 animate-ping' : 'bg-emerald-400 animate-pulse'
+                }`}
+              />
+              <span className="font-medium">
+                {isSyncing ? 'Syncing GitHub...' : `${repoCount} Public GitHub Repos`}
+              </span>
+              <RefreshCw
+                className={`w-3.5 h-3.5 text-slate-400 group-hover:text-cyan-400 transition-transform ${
+                  isSyncing ? 'animate-spin text-cyan-400' : 'group-hover:rotate-180'
+                }`}
+              />
+            </button>
           </div>
         </div>
 

@@ -155,7 +155,9 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
             </div>
           )}
 
-          {/* Actions */}
+          {/* Actions: Strictly follows user rule:
+              If deployment URL found: show both "Live Demo" and "View GitHub".
+              If no deployment URL found: show only "View GitHub". */}
           <div className="pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               {project.liveUrl && (
@@ -166,21 +168,23 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
                   className="px-5 py-2.5 rounded-xl font-semibold text-xs sm:text-sm bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 shadow-md shadow-cyan-500/20 flex items-center gap-2 transition-all hover:scale-105 active:scale-95"
                   data-cursor="LAUNCH"
                 >
-                  <span>Launch Live Demo</span>
+                  <span>Live Demo</span>
                   <ExternalLink className="w-4 h-4" />
                 </a>
               )}
 
-              <a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-4 py-2.5 rounded-xl font-medium text-xs sm:text-sm bg-slate-800 hover:bg-slate-700 text-white border border-white/10 flex items-center gap-2 transition-colors"
-                data-cursor="GITHUB"
-              >
-                <Github className="w-4 h-4" />
-                <span>View Source Code</span>
-              </a>
+              {project.githubUrl && (
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2.5 rounded-xl font-medium text-xs sm:text-sm bg-slate-800 hover:bg-slate-700 text-white border border-white/10 flex items-center gap-2 transition-colors"
+                  data-cursor="GITHUB"
+                >
+                  <Github className="w-4 h-4 text-cyan-400" />
+                  <span>View GitHub</span>
+                </a>
+              )}
             </div>
 
             <button

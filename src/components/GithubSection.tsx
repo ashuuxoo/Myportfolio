@@ -12,67 +12,31 @@ import {
   Smartphone,
   BarChart2,
   Radio,
+  Sparkles,
 } from 'lucide-react';
 import { RevealTitle } from './ui/RevealTitle';
+import { useGitHub } from '../context/GitHubContext';
 
 export const GithubSection: React.FC = () => {
-  const repos = [
-    {
-      name: 'Mynoook',
-      fullName: 'ashuuxoo/Mynoook',
-      url: 'https://github.com/ashuuxoo/Mynoook',
-      liveUrl: 'http://mynoook.vercel.app/',
-      desc: 'A modern browser-based writing workspace for creating, organizing, editing, translating and exporting books. Flagship live web application.',
-      language: 'TypeScript / React 19',
-      langColor: 'bg-blue-400',
-      tag: 'Flagship Web App',
-      icon: BookOpen,
-    },
-    {
-      name: 'Muvidate',
-      fullName: 'ashuuxoo/Muvidate',
-      url: 'https://github.com/ashuuxoo/Muvidate',
-      liveUrl: 'http://muvidate.vercel.app/',
-      desc: 'A social movie watch-party application that combines synchronized playback, real-time chat, and voice notes with Firebase.',
-      language: 'TypeScript / React',
-      langColor: 'bg-purple-400',
-      tag: 'Real-Time Web',
-      icon: Code2,
-    },
-    {
-      name: 'retail-analytics-aficionado',
-      fullName: 'ashuuxoo/retail-analytics-aficionado',
-      url: 'https://github.com/ashuuxoo/retail-analytics-aficionado',
-      liveUrl: 'https://coffee-forecast-dashboard.streamlit.app/',
-      desc: 'Transaction-level retail POS analytics modeling product velocity, revenue contribution margins, category trends, and Pareto concentration.',
-      language: 'Python / Streamlit',
-      langColor: 'bg-emerald-400',
-      tag: 'Business Intelligence',
-      icon: BarChart2,
-    },
-    {
-      name: 'coffee-forecast-dashboard',
-      fullName: 'ashuuxoo/coffee-forecast-dashboard',
-      url: 'https://github.com/ashuuxoo/coffee-forecast-dashboard',
-      liveUrl: 'https://retail-analytics-aficionado-nn73sks3ooiojkrr3s3v7e.streamlit.app/',
-      desc: 'Demand forecasting dashboard predicting peak sales periods, trend trajectories, and supporting inventory, staffing and revenue planning with Meta Prophet.',
-      language: 'Python / Prophet',
-      langColor: 'bg-amber-400',
-      tag: 'Time Series / ML',
-      icon: Cpu,
-    },
-    {
-      name: 'Looklikepro',
-      fullName: 'ashuuxoo/Looklikepro',
-      url: 'https://github.com/ashuuxoo/Looklikepro',
-      liveUrl: 'https://github.com/ashuuxoo/Looklikepro/actions',
-      desc: 'Native Android application built with Kotlin and Jetpack Compose for low-latency phone number resolution and carrier intelligence. Includes CI workflow build.',
-      language: 'Kotlin / Compose',
-      langColor: 'bg-indigo-400',
-      tag: 'Native Android (APK CI)',
-      icon: Smartphone,
-    },
-  ];
+  const { projects, repoCount, githubProfileUrl } = useGitHub();
+
+  // Helper to choose appropriate category icon
+  const getRepoIcon = (category: string[], id: string) => {
+    if (id.includes('mynoook') || id.includes('mynook')) return BookOpen;
+    if (category.includes('Mobile') || id.includes('looklikepro')) return Smartphone;
+    if (category.includes('Analytics') || id.includes('retail')) return BarChart2;
+    if (category.includes('AI / ML') || id.includes('forecast')) return Cpu;
+    if (category.includes('Web')) return Code2;
+    return FolderGit2;
+  };
+
+  const getLangColor = (category: string[]) => {
+    if (category.includes('Mobile')) return 'bg-indigo-400';
+    if (category.includes('Analytics')) return 'bg-emerald-400';
+    if (category.includes('AI / ML')) return 'bg-amber-400';
+    if (category.includes('Web')) return 'bg-cyan-400';
+    return 'bg-blue-400';
+  };
 
   return (
     <section className="relative py-24 bg-[#080b12] border-t border-white/5 overflow-hidden">
@@ -88,29 +52,33 @@ export const GithubSection: React.FC = () => {
               Open Source / GitHub
             </RevealTitle>
             <p className="text-slate-400 mt-2 text-sm sm:text-base max-w-xl">
-              Public software repositories maintained on GitHub. Clean commits, documented READMEs, live deployments, and verifiable code.
+              Public software repositories maintained on GitHub. Dynamically synchronized directly from{' '}
+              <span className="text-cyan-400 font-mono">@ashuuxoo</span> with live commits, documented READMEs, and verifiable code.
             </p>
           </div>
 
           <a
-            href="https://github.com/ashuuxoo"
+            href={githubProfileUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-white border border-white/10 hover:border-white/25 text-xs sm:text-sm font-medium transition-all shadow-md group shrink-0"
             data-cursor="GITHUB"
           >
-            <span>View GitHub Profile</span>
+            <span>View GitHub Profile ({repoCount})</span>
             <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-cyan-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
           </a>
         </div>
 
         {/* Repositories Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {repos.map((repo, idx) => {
-            const IconComponent = repo.icon;
+          {projects.map((repo, idx) => {
+            const IconComponent = getRepoIcon(repo.category, repo.id);
+            const langColor = getLangColor(repo.category);
+            const primaryLang = repo.techStack[0] || (repo.category[0] ? `${repo.category[0]} Project` : 'Source Code');
+
             return (
               <motion.div
-                key={repo.name}
+                key={repo.id}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -123,64 +91,79 @@ export const GithubSection: React.FC = () => {
                       <div className="p-2 rounded-lg bg-slate-950 border border-white/5 text-cyan-400">
                         <IconComponent className="w-4 h-4" />
                       </div>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-white/5">
-                        {repo.tag}
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-white/5 line-clamp-1 max-w-[170px]">
+                        {repo.type || (repo.isPrimary ? 'Flagship' : repo.category.join(' • '))}
                       </span>
                     </div>
 
-                    <a
-                      href={repo.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-1 text-slate-500 hover:text-cyan-400 transition-colors"
-                      title="GitHub Repository"
-                      data-cursor="GITHUB"
-                    >
-                      <ArrowUpRight className="w-4 h-4" />
-                    </a>
+                    {repo.githubUrl && (
+                      <a
+                        href={repo.githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-1 text-slate-500 hover:text-cyan-400 transition-colors"
+                        title="GitHub Repository"
+                        data-cursor="GITHUB"
+                      >
+                        <ArrowUpRight className="w-4 h-4" />
+                      </a>
+                    )}
                   </div>
 
                   <a
-                    href={repo.url}
+                    href={repo.githubUrl || githubProfileUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-mono text-base font-bold text-white group-hover:text-cyan-300 transition-colors mb-2 block"
+                    className="font-mono text-base font-bold text-white group-hover:text-cyan-300 transition-colors mb-2 block line-clamp-1"
                   >
-                    {repo.name}
+                    {repo.title}
                   </a>
 
                   <p className="text-xs text-slate-400 leading-relaxed font-sans line-clamp-3 mb-4">
-                    {repo.desc}
+                    {repo.description}
                   </p>
                 </div>
 
                 <div className="pt-3 border-t border-white/5 flex items-center justify-between text-xs font-mono">
                   <div className="flex items-center gap-1.5 text-slate-400">
-                    <span className={`w-2.5 h-2.5 rounded-full ${repo.langColor}`} />
-                    <span>{repo.language}</span>
+                    <span className={`w-2.5 h-2.5 rounded-full ${langColor}`} />
+                    <span className="line-clamp-1 max-w-[120px]">{primaryLang}</span>
                   </div>
 
+                  {/* Strictly follows rule: If deployment URL exists, show Demo + Repo. If not, show Repo. */}
                   <div className="flex items-center gap-2">
-                    {repo.liveUrl && (
+                    {repo.liveUrl ? (
+                      <>
+                        <a
+                          href={repo.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-[11px] text-cyan-400 hover:text-cyan-300 hover:underline font-semibold"
+                          data-cursor="LAUNCH"
+                        >
+                          <span>Live Demo</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                        <a
+                          href={repo.githubUrl || githubProfileUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[11px] text-slate-400 hover:text-white"
+                        >
+                          View GitHub
+                        </a>
+                      </>
+                    ) : (
                       <a
-                        href={repo.liveUrl}
+                        href={repo.githubUrl || githubProfileUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-[11px] text-cyan-400 hover:text-cyan-300 hover:underline"
-                        data-cursor="LAUNCH"
+                        className="inline-flex items-center gap-1 text-[11px] text-slate-300 hover:text-white font-medium"
                       >
-                        <span>Demo</span>
-                        <ExternalLink className="w-3 h-3" />
+                        <span>View GitHub</span>
+                        <ArrowUpRight className="w-3 h-3 text-slate-400" />
                       </a>
                     )}
-                    <a
-                      href={repo.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[11px] text-slate-400 hover:text-white"
-                    >
-                      Repo
-                    </a>
                   </div>
                 </div>
               </motion.div>

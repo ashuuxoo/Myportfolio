@@ -17,8 +17,10 @@ import {
   BarChart2,
 } from 'lucide-react';
 import { CERTIFICATIONS } from '../data/experience';
+import { useGitHub } from '../context/GitHubContext';
 
 export const About: React.FC = () => {
+  const { repoCount } = useGitHub();
   const verifiedPillars = [
     {
       title: 'Data Science & BI Reporting',
@@ -69,7 +71,7 @@ export const About: React.FC = () => {
         {/* Animated Statistics Row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
           <StatCounter
-            value={5}
+            value={repoCount}
             suffix=" Repos"
             label="Public Repositories"
             sublabel="GitHub: @ashuuxoo"

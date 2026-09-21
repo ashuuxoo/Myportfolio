@@ -162,37 +162,56 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSelect }) =
             )}
           </div>
 
-          {/* Buttons */}
-          <div className="flex items-center gap-2.5 shrink-0">
-            {project.liveUrl && (
-              <a
-                href={project.liveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-4 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 shadow-md shadow-cyan-500/20 flex items-center gap-1.5 transition-transform hover:scale-105 active:scale-95"
-                data-cursor="LAUNCH"
-              >
-                <span>LIVE DEMO</span>
-                <ExternalLink className="w-3.5 h-3.5" />
-              </a>
-            )}
+          {/* Buttons: Strictly obeys user rule:
+              If deployment URL found: show both "Live Demo" and "View GitHub".
+              If no deployment URL found: show only "View GitHub". */}
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
+            {project.liveUrl ? (
+              <>
+                <a
+                  href={project.liveUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 shadow-md shadow-cyan-500/20 flex items-center gap-1.5 transition-transform hover:scale-105 active:scale-95"
+                  data-cursor="LAUNCH"
+                >
+                  <span>Live Demo</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
 
-            {project.githubUrl && (
-              <a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-xl text-slate-300 hover:text-white bg-slate-950 hover:bg-slate-800 border border-white/10 transition-colors"
-                title="View GitHub Repository"
-                data-cursor="GITHUB"
-              >
-                <Github className="w-4 h-4" />
-              </a>
+                {project.githubUrl && (
+                  <a
+                    href={project.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-2 rounded-xl text-xs font-medium text-slate-300 hover:text-white bg-slate-950 hover:bg-slate-800 border border-white/10 transition-colors flex items-center gap-1.5"
+                    title="View GitHub Repository"
+                    data-cursor="GITHUB"
+                  >
+                    <Github className="w-3.5 h-3.5" />
+                    <span>View GitHub</span>
+                  </a>
+                )}
+              </>
+            ) : (
+              project.githubUrl && (
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white border border-white/15 hover:border-cyan-500/40 transition-all flex items-center gap-1.5 shadow-sm"
+                  title="View GitHub Repository"
+                  data-cursor="GITHUB"
+                >
+                  <Github className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>View GitHub</span>
+                </a>
+              )
             )}
 
             <button
               onClick={() => onSelect(project)}
-              className="px-3 py-2 rounded-xl text-xs font-medium text-slate-300 hover:text-white bg-slate-800/60 hover:bg-slate-800 border border-white/10 transition-colors cursor-pointer"
+              className="px-3 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-white bg-slate-900/60 hover:bg-slate-800/80 border border-white/5 hover:border-white/10 transition-colors cursor-pointer"
             >
               Details
             </button>
