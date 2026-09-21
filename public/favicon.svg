@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="adGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06b6d4" />
+      <stop offset="50%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#8b5cf6" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="#090d16" />
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="none" stroke="url(#adGrad)" stroke-width="2" stroke-opacity="0.6" />
+  <path d="M18 46 L27 18 L36 46 M21 38 L33 38" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M36 18 L44 18 C49.5 18 53 21.5 53 27 C53 32.5 49.5 36 44 36 L36 36 Z M36 36 L45 36 C50.5 36 54 39.5 54 46 C54 52.5 50.5 46 45 46 L36 46" fill="none" stroke="url(#adGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+  <circle cx="51" cy="45" r="2.5" fill="#06b6d4" />
+</svg>
