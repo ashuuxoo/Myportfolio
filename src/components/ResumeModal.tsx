@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { ProfileImage } from './ui/ProfileImage';
 import { CERTIFICATIONS } from '../data/experience';
+import { useGitHub } from '../context/GitHubContext';
 
 interface ResumeModalProps {
   isOpen: boolean;
@@ -26,6 +27,7 @@ interface ResumeModalProps {
 }
 
 export const ResumeModal: React.FC<ResumeModalProps> = ({ isOpen, onClose }) => {
+  const { githubProfileUrl, githubAvatarUrl } = useGitHub();
   const [activeTab, setActiveTab] = useState<'view' | 'download'>('view');
 
   if (!isOpen) return null;
@@ -120,11 +122,20 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({ isOpen, onClose }) => 
                   ashiskudas143@gmail.com
                 </a>
                 <a
-                  href="https://github.com/ashuuxoo"
+                  href={githubProfileUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-1.5 hover:text-cyan-300 transition-colors"
                 >
+                  <img
+                    src={githubAvatarUrl}
+                    alt="@ashuuxoo"
+                    className="w-3.5 h-3.5 rounded-full object-cover ring-1 ring-cyan-400/40 shrink-0"
+                    referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = 'https://github.com/ashuuxoo.png';
+                    }}
+                  />
                   <Github className="w-3.5 h-3.5 text-slate-300 shrink-0" />
                   github.com/ashuuxoo
                 </a>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ProfileImage } from './ui/ProfileImage';
+import { useGitHub } from '../context/GitHubContext';
 import {
   ArrowDown,
   ArrowUpRight,
@@ -16,6 +17,7 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ onOpenResume }) => {
+  const { githubProfileUrl, githubAvatarUrl } = useGitHub();
   // Terminal typing animation states
   const [terminalStep, setTerminalStep] = useState(0);
 
@@ -105,14 +107,23 @@ export const Hero: React.FC<HeroProps> = ({ onOpenResume }) => {
               )}
 
               <a
-                href="https://github.com/ashuuxoo"
+                href={githubProfileUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-5 py-3 rounded-xl font-semibold text-sm bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-white border border-white/10 hover:border-white/20 transition-all flex items-center gap-2"
+                className="px-5 py-3 rounded-xl font-semibold text-sm bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-white border border-white/10 hover:border-white/20 transition-all flex items-center gap-2 group"
                 data-cursor="GITHUB"
               >
+                <img
+                  src={githubAvatarUrl}
+                  alt="GitHub"
+                  className="w-4 h-4 rounded-full object-cover ring-1 ring-cyan-500/40 shrink-0"
+                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = 'https://github.com/ashuuxoo.png';
+                  }}
+                />
                 <span>GitHub</span>
-                <ArrowUpRight className="w-4 h-4 text-slate-400" />
+                <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-cyan-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
               </a>
 
               <a

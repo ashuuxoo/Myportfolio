@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'motion/react';
 import { Sparkles, ShieldCheck, Zap } from 'lucide-react';
+import { useGitHub } from '../../context/GitHubContext';
 
 export type ProfileImageVariant = 'navbar' | 'hero' | 'about' | 'contact' | 'default';
 
@@ -14,7 +15,6 @@ interface ProfileImageProps {
 
 const PRIMARY_IMAGE = '/IMG_6036.jpeg';
 const SECONDARY_IMAGE = '/profile.jpg';
-const FALLBACK_AVATAR = 'https://avatars.githubusercontent.com/u/116308619?v=4';
 
 export const ProfileImage: React.FC<ProfileImageProps> = ({
   variant = 'default',
@@ -23,6 +23,7 @@ export const ProfileImage: React.FC<ProfileImageProps> = ({
   showStatus = false,
   size = 'md',
 }) => {
+  const { githubAvatarUrl } = useGitHub();
   const [imgSrc, setImgSrc] = useState(PRIMARY_IMAGE);
   const [loadErrorCount, setLoadErrorCount] = useState(0);
 
@@ -32,7 +33,7 @@ export const ProfileImage: React.FC<ProfileImageProps> = ({
       setImgSrc(SECONDARY_IMAGE);
     } else if (loadErrorCount === 1) {
       setLoadErrorCount(2);
-      setImgSrc(FALLBACK_AVATAR);
+      setImgSrc(githubAvatarUrl || 'https://github.com/ashuuxoo.png');
     }
   };
 

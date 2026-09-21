@@ -1,8 +1,10 @@
 import React from 'react';
 import { Github, Linkedin, Mail, ArrowUp } from 'lucide-react';
 import { ProfileImage } from './ui/ProfileImage';
+import { useGitHub } from '../context/GitHubContext';
 
 export const Footer: React.FC = () => {
+  const { githubProfileUrl, githubAvatarUrl } = useGitHub();
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -29,14 +31,23 @@ export const Footer: React.FC = () => {
           {/* Social Links */}
           <div className="flex items-center gap-4">
             <a
-              href="https://github.com/ashuuxoo"
+              href={githubProfileUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 rounded-xl bg-slate-900 border border-white/5 hover:border-cyan-500/30 text-slate-300 hover:text-white transition-colors"
-              title="GitHub"
+              className="p-1.5 px-2.5 rounded-xl bg-slate-900 border border-white/5 hover:border-cyan-500/30 text-slate-300 hover:text-white transition-colors flex items-center gap-1.5"
+              title="GitHub (@ashuuxoo)"
               data-cursor="GITHUB"
             >
-              <Github className="w-4 h-4" />
+              <img
+                src={githubAvatarUrl}
+                alt="GitHub Avatar"
+                className="w-4 h-4 rounded-full object-cover ring-1 ring-cyan-500/40 shrink-0"
+                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = 'https://github.com/ashuuxoo.png';
+                }}
+              />
+              <Github className="w-3.5 h-3.5" />
             </a>
 
             <a
@@ -82,12 +93,21 @@ export const Footer: React.FC = () => {
             </a>
             <span>•</span>
             <a
-              href="https://github.com/ashuuxoo"
+              href={githubProfileUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-cyan-400 transition-colors"
+              className="hover:text-cyan-400 transition-colors inline-flex items-center gap-1.5"
             >
-              github.com/ashuuxoo
+              <img
+                src={githubAvatarUrl}
+                alt="@ashuuxoo"
+                className="w-3.5 h-3.5 rounded-full object-cover ring-1 ring-cyan-400/40 inline-block"
+                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = 'https://github.com/ashuuxoo.png';
+                }}
+              />
+              <span>github.com/ashuuxoo</span>
             </a>
           </div>
         </div>

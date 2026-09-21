@@ -8,7 +8,7 @@ import { RevealTitle } from './ui/RevealTitle';
 import { Layers, Sparkles, FolderGit2, ExternalLink, RefreshCw, CheckCircle } from 'lucide-react';
 
 export const Projects: React.FC = () => {
-  const { projects, repoCount, isSyncing, refresh, githubProfileUrl } = useGitHub();
+  const { projects, repoCount, isSyncing, refresh, githubProfileUrl, githubAvatarUrl } = useGitHub();
   const [selectedCategory, setSelectedCategory] = useState<ProjectCategory>('All');
   const [activeModalProject, setActiveModalProject] = useState<Project | null>(null);
 
@@ -41,9 +41,18 @@ export const Projects: React.FC = () => {
                 href={githubProfileUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-cyan-400 hover:text-cyan-300 underline underline-offset-4"
+                className="text-cyan-400 hover:text-cyan-300 underline underline-offset-4 inline-flex items-center gap-1.5"
               >
-                github.com/ashuuxoo
+                <img
+                  src={githubAvatarUrl}
+                  alt="@ashuuxoo"
+                  className="w-3.5 h-3.5 rounded-full object-cover ring-1 ring-cyan-400/40 inline-block"
+                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = 'https://github.com/ashuuxoo.png';
+                  }}
+                />
+                <span>github.com/ashuuxoo</span>
               </a>
               , fully verified and auto-updated.
             </p>
@@ -57,6 +66,15 @@ export const Projects: React.FC = () => {
               title="Click to re-sync with GitHub"
               className="text-xs font-mono text-slate-300 hover:text-white flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-white/10 transition-all cursor-pointer group shadow-sm"
             >
+              <img
+                src={githubAvatarUrl}
+                alt="GitHub Avatar"
+                className="w-4 h-4 rounded-full object-cover ring-1 ring-cyan-400/40 shrink-0"
+                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = 'https://github.com/ashuuxoo.png';
+                }}
+              />
               <span
                 className={`w-2 h-2 rounded-full ${
                   isSyncing ? 'bg-amber-400 animate-ping' : 'bg-emerald-400 animate-pulse'

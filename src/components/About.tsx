@@ -20,7 +20,7 @@ import { CERTIFICATIONS } from '../data/experience';
 import { useGitHub } from '../context/GitHubContext';
 
 export const About: React.FC = () => {
-  const { repoCount } = useGitHub();
+  const { repoCount, githubProfileUrl, githubAvatarUrl } = useGitHub();
   const verifiedPillars = [
     {
       title: 'Data Science & BI Reporting',
@@ -200,11 +200,20 @@ export const About: React.FC = () => {
             {/* Quick Links */}
             <div className="pt-2 flex flex-wrap items-center gap-4 text-xs font-mono">
               <a
-                href="https://github.com/ashuuxoo"
+                href={githubProfileUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 text-cyan-400 hover:text-cyan-300 underline underline-offset-4"
               >
+                <img
+                  src={githubAvatarUrl}
+                  alt="@ashuuxoo"
+                  className="w-3.5 h-3.5 rounded-full object-cover ring-1 ring-cyan-400/40 inline-block"
+                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = 'https://github.com/ashuuxoo.png';
+                  }}
+                />
                 <span>github.com/ashuuxoo</span>
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>

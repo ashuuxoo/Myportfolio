@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ProfileImage } from './ui/ProfileImage';
+import { useGitHub } from '../context/GitHubContext';
 import {
   Github,
   Linkedin,
@@ -16,6 +17,7 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenResume }) => {
+  const { githubProfileUrl, githubAvatarUrl } = useGitHub();
   const [scrolled, setScrolled] = useState(false);
   const [minimized, setMinimized] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -122,14 +124,23 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenResume }) => {
           {/* Action Links: GitHub, LinkedIn, Resume */}
           <div className="hidden sm:flex items-center gap-2.5">
             <a
-              href="https://github.com/ashuuxoo"
+              href={githubProfileUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 rounded-full text-slate-300 hover:text-white bg-slate-900/80 hover:bg-slate-800 border border-white/10 transition-colors shadow-sm"
-              title="GitHub Profile"
+              className="px-2 py-1.5 rounded-full text-slate-300 hover:text-white bg-slate-900/80 hover:bg-slate-800 border border-white/10 transition-colors shadow-sm flex items-center gap-1.5 group"
+              title="GitHub Profile (@ashuuxoo)"
               data-cursor="GITHUB"
             >
-              <Github className="w-4 h-4" />
+              <img
+                src={githubAvatarUrl}
+                alt="GitHub Avatar"
+                className="w-4 h-4 rounded-full object-cover ring-1 ring-cyan-400/40 shrink-0"
+                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = 'https://github.com/ashuuxoo.png';
+                }}
+              />
+              <Github className="w-3.5 h-3.5 text-slate-400 group-hover:text-white transition-colors" />
             </a>
 
             <a
@@ -194,12 +205,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenResume }) => {
               ))}
               <div className="pt-3 border-t border-white/10 flex items-center justify-around">
                 <a
-                  href="https://github.com/ashuuxoo"
+                  href={githubProfileUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 text-xs text-slate-300 hover:text-white px-3 py-2 rounded-lg bg-slate-800/80 border border-white/10"
                 >
-                  <Github className="w-4 h-4" />
+                  <img
+                    src={githubAvatarUrl}
+                    alt="GitHub"
+                    className="w-4 h-4 rounded-full object-cover ring-1 ring-cyan-500/40 shrink-0"
+                    referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = 'https://github.com/ashuuxoo.png';
+                    }}
+                  />
+                  <Github className="w-3.5 h-3.5" />
                   <span>GitHub</span>
                 </a>
                 <a

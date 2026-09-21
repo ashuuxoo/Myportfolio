@@ -14,8 +14,10 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { ProfileImage } from './ui/ProfileImage';
+import { useGitHub } from '../context/GitHubContext';
 
 export const Contact: React.FC = () => {
+  const { githubProfileUrl, githubAvatarUrl } = useGitHub();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -172,15 +174,24 @@ export const Contact: React.FC = () => {
               </a>
 
               <a
-                href="https://github.com/ashuuxoo"
+                href={githubProfileUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-white/10 text-xs font-medium text-slate-200 hover:text-white transition-colors"
+                className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-white/10 text-xs font-medium text-slate-200 hover:text-white transition-colors group"
                 data-cursor="GITHUB"
               >
-                <Github className="w-4 h-4" />
-                <span>GitHub</span>
-                <ArrowUpRight className="w-3.5 h-3.5 text-slate-500" />
+                <img
+                  src={githubAvatarUrl}
+                  alt="@ashuuxoo"
+                  className="w-4 h-4 rounded-full object-cover ring-1 ring-cyan-500/40 shrink-0"
+                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = 'https://github.com/ashuuxoo.png';
+                  }}
+                />
+                <Github className="w-3.5 h-3.5 text-slate-400 group-hover:text-white transition-colors" />
+                <span>GitHub (@ashuuxoo)</span>
+                <ArrowUpRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-cyan-400 transition-colors" />
               </a>
             </div>
 

@@ -18,7 +18,7 @@ import { RevealTitle } from './ui/RevealTitle';
 import { useGitHub } from '../context/GitHubContext';
 
 export const GithubSection: React.FC = () => {
-  const { projects, repoCount, githubProfileUrl } = useGitHub();
+  const { projects, repoCount, githubProfileUrl, githubAvatarUrl, githubUser } = useGitHub();
 
   // Helper to choose appropriate category icon
   const getRepoIcon = (category: string[], id: string) => {
@@ -61,12 +61,68 @@ export const GithubSection: React.FC = () => {
             href={githubProfileUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-white border border-white/10 hover:border-white/25 text-xs sm:text-sm font-medium transition-all shadow-md group shrink-0"
+            className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-white border border-white/10 hover:border-white/25 text-xs sm:text-sm font-medium transition-all shadow-md group shrink-0"
             data-cursor="GITHUB"
           >
+            <img
+              src={githubAvatarUrl}
+              alt="GitHub Profile Avatar"
+              className="w-5 h-5 rounded-full object-cover ring-1 ring-cyan-400/40 shrink-0"
+              referrerPolicy="no-referrer"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = `https://github.com/ashuuxoo.png`;
+              }}
+            />
             <span>View GitHub Profile ({repoCount})</span>
             <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-cyan-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
           </a>
+        </div>
+
+        {/* Dynamic GitHub Profile Identity Card */}
+        <div className="mb-8 p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-slate-900/90 via-slate-900/70 to-slate-950/90 border border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 relative overflow-hidden backdrop-blur-sm">
+          <div className="flex items-center gap-4">
+            <div className="relative shrink-0">
+              <img
+                src={githubAvatarUrl}
+                alt={githubUser?.name || 'GitHub Profile Avatar'}
+                className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover ring-2 ring-cyan-500/30 shadow-lg shadow-cyan-500/10"
+                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = `https://github.com/ashuuxoo.png`;
+                }}
+              />
+              <div className="absolute -bottom-1 -right-1 p-1 rounded-full bg-slate-950 border border-white/15 text-white">
+                <Github className="w-3 h-3 text-cyan-400" />
+              </div>
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="font-display font-bold text-white text-base sm:text-lg">
+                  {githubUser?.name || 'Asis Kumar Das'}
+                </h3>
+                <span className="font-mono text-xs text-cyan-400">@ashuuxoo</span>
+              </div>
+              <p className="text-xs text-slate-400 mt-1 max-w-xl line-clamp-2">
+                {githubUser?.bio || 'Technology and analytics professional • Data Science, BI Reporting & Applied AI'}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
+            <div className="text-right hidden md:block font-mono text-xs text-slate-400">
+              <span className="text-white font-bold">{repoCount}</span> Public Repos
+            </div>
+            <a
+              href={githubProfileUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-white border border-white/10 text-xs font-mono font-medium transition-all shadow-sm group"
+              data-cursor="GITHUB"
+            >
+              <span>github.com/ashuuxoo</span>
+              <ExternalLink className="w-3.5 h-3.5 text-cyan-400" />
+            </a>
+          </div>
         </div>
 
         {/* Repositories Grid */}

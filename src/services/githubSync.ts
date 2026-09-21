@@ -24,11 +24,63 @@ export interface GitHubRepo {
   created_at: string;
 }
 
+export interface GitHubUserProfile {
+  login: string;
+  name: string | null;
+  avatar_url: string;
+  html_url: string;
+  bio: string | null;
+  public_repos: number;
+  followers?: number;
+  following?: number;
+}
+
 export interface SyncResult {
   projects: Project[];
   repoCount: number;
+  userProfile: GitHubUserProfile;
   lastSynced: Date;
   fromCache: boolean;
+}
+
+/**
+ * Fetches the user's latest GitHub profile metadata including the dynamic avatar URL.
+ * Never stores or relies on a static permanent avatar string.
+ */
+export async function fetchGitHubUserProfile(): Promise<GitHubUserProfile> {
+  try {
+    const res = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}`, {
+      headers: {
+        Accept: 'application/vnd.github.v3+json',
+      },
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      return {
+        login: data.login || GITHUB_USERNAME,
+        name: data.name || 'Asis Kumar Das',
+        avatar_url: data.avatar_url || `https://github.com/${GITHUB_USERNAME}.png`,
+        html_url: data.html_url || `https://github.com/${GITHUB_USERNAME}`,
+        bio: data.bio || null,
+        public_repos: typeof data.public_repos === 'number' ? data.public_repos : 6,
+        followers: data.followers,
+        following: data.following,
+      };
+    }
+  } catch (err) {
+    console.warn('Failed to fetch GitHub profile directly:', err);
+  }
+
+  // Dynamic GitHub avatar redirect without any static avatar ID
+  return {
+    login: GITHUB_USERNAME,
+    name: 'Asis Kumar Das',
+    avatar_url: `https://github.com/${GITHUB_USERNAME}.png`,
+    html_url: `https://github.com/${GITHUB_USERNAME}`,
+    bio: 'Technology and analytics professional',
+    public_repos: 6,
+  };
 }
 
 /**
@@ -406,20 +458,25 @@ export function parseRepoDetails(
 /**
  * Fetches all public repositories for user `ashuuxoo` directly from GitHub Public API,
  * retrieves their latest raw README files, and dynamically constructs Project objects.
+ * Also retrieves live GitHub profile metadata including dynamic avatar.
  */
 export async function fetchGitHubProjects(): Promise<SyncResult> {
-  try {
-    const reposResponse = await fetch(
+  // Fetch user profile and repositories concurrently
+  const [userProfile, reposResponse] = await Promise.all([
+    fetchGitHubUserProfile(),
+    fetch(
       `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=100`,
       {
         headers: {
           Accept: 'application/vnd.github.v3+json',
         },
       }
-    );
+    ).catch(() => null),
+  ]);
 
-    if (!reposResponse.ok) {
-      throw new Error(`GitHub API returned status ${reposResponse.status}`);
+  try {
+    if (!reposResponse || !reposResponse.ok) {
+      throw new Error(`GitHub repos API returned status ${reposResponse?.status ?? 'network error'}`);
     }
 
     const repos: GitHubRepo[] = await reposResponse.json();
@@ -481,10 +538,12 @@ export async function fetchGitHubProjects(): Promise<SyncResult> {
       return 0;
     });
 
-    // Save to local storage for instant cold-start and resilience
+    // Save projects to local storage for instant cold-start and resilience
+    // Notice: We deliberately do NOT store avatar_url permanently in localStorage
     const result: SyncResult = {
       projects: dynamicProjects,
       repoCount: publicRepos.length,
+      userProfile,
       lastSynced: new Date(),
       fromCache: false,
     };
@@ -515,6 +574,7 @@ export async function fetchGitHubProjects(): Promise<SyncResult> {
           return {
             projects: parsed.projects,
             repoCount: parsed.repoCount || parsed.projects.length,
+            userProfile,
             lastSynced: new Date(parsed.timestamp || Date.now()),
             fromCache: true,
           };
@@ -528,6 +588,7 @@ export async function fetchGitHubProjects(): Promise<SyncResult> {
     return {
       projects: FALLBACK_PROJECTS,
       repoCount: FALLBACK_PROJECTS.length,
+      userProfile,
       lastSynced: new Date(),
       fromCache: true,
     };
